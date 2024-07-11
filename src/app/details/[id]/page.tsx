@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { getComission, getEmissionDocuments, getEmissionUnitPrice } from "../services";
+import { getEmission, getEmissionDocuments, getEmissionUnitPrice } from "../services";
 import { Emission, EmissionDocuments, EmissionUnityPrice } from "../types";
 import { Card, CardDescription, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
@@ -11,32 +11,32 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { DownloadIcon, FileIcon, Link1Icon } from "@radix-ui/react-icons";
+import { Link1Icon } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
 
 export default async function Page({ params: { id } }: { params: { id: number } }) {
-  const comissionQuery: Emission = await getComission(id)
-  const comission = comissionQuery.content
+  const emissionQuery: Emission = await getEmission(id)
+  const emission = emissionQuery.content
 
-  const emissionUnitPrice: EmissionUnityPrice = await getEmissionUnitPrice(comission.operacao.CodigoOpea)
-  const emissionDocuments: EmissionDocuments = await getEmissionDocuments(comission.idCedoc)
+  const emissionUnitPrice: EmissionUnityPrice = await getEmissionUnitPrice(emission.operacao.CodigoOpea)
+  const emissionDocuments: EmissionDocuments = await getEmissionDocuments(emission.idCedoc)
 
   return (
     <main className="container flex items-start justify-start">
       <aside className="w-80 pt-10 space-y-4 pr-8 sticky top-14 min-h-screen border-r">
         <Link href="/list" className="block text-sm text-muted-foreground hover:text-accent-foreground" >← Back to Templates</Link>
-        <Badge variant="outline">{comission.statusPassivoOperacao.value}</Badge>
+        <Badge variant="outline">{emission.statusPassivoOperacao.value}</Badge>
         <div className="space-y-2">
-          <h1 className="text-4xl font-bold">{comission.apelidoOperacao}</h1>
+          <h1 className="text-4xl font-bold">{emission.apelidoOperacao}</h1>
           <ul className="grid gap-3">
             <li className="flex items-center pt-2 justify-between text-sm">
-              <span className="text-muted-foreground">Código opea</span><span>{comission.operacao.CodigoOpea}</span>
+              <span className="text-muted-foreground">Código opea</span><span>{emission.operacao.CodigoOpea}</span>
             </li>
             <li className="flex items-center pt-2 justify-between text-sm">
-              <span className="text-muted-foreground">ISIN</span><span>{comission.codigoIsin}</span>
+              <span className="text-muted-foreground">ISIN</span><span>{emission.codigoIsin}</span>
             </li>
             <li className="flex items-center pt-2 justify-between text-sm">
-              <span className="text-muted-foreground">IF</span><span>{comission.codigoCetipBbb}</span>
+              <span className="text-muted-foreground">IF</span><span>{emission.codigoCetipBbb}</span>
             </li>
           </ul>
         </div>
@@ -92,62 +92,62 @@ export default async function Page({ params: { id } }: { params: { id: number } 
           <div className="grid grid-cols-2 gap-8">
             <ul className="grid gap-3">
               <li className="flex items-center pt-2 justify-between text-sm">
-                <span className="text-muted-foreground">Emissor</span><span>{comission.emissor.descricao}</span>
+                <span className="text-muted-foreground">Emissor</span><span>{emission.emissor.descricao}</span>
               </li>
               <li className="flex items-center pt-2 justify-between text-sm">
-                <span className="text-muted-foreground">Emissão</span><span>{comission.emissao}</span>
+                <span className="text-muted-foreground">Emissão</span><span>{emission.emissao}</span>
               </li>
               <li className="flex items-center pt-2 justify-between text-sm">
-                <span className="text-muted-foreground">Classe</span><span>{comission.classeOperacao.descricao}</span>
+                <span className="text-muted-foreground">Classe</span><span>{emission.classeOperacao.descricao}</span>
               </li>
               <li className="flex items-center pt-2 justify-between text-sm">
-                <span className="text-muted-foreground">Concentração</span><span>{comission.concentracao.value}</span>
+                <span className="text-muted-foreground">Concentração</span><span>{emission.concentracao.value}</span>
               </li>
               <li className="flex items-center pt-2 justify-between text-sm">
-                <span className="text-muted-foreground">Agente Fiduciário</span><span>{comission.agenteFiduciario.nomeSimplificado}</span>
+                <span className="text-muted-foreground">Agente Fiduciário</span><span>{emission.agenteFiduciario.nomeSimplificado}</span>
               </li>
               <li className="flex items-center pt-2 justify-between text-sm">
-                <span className="text-muted-foreground">Série</span><span>{comission.serie}</span>
-              </li>
-            </ul>
-            <ul className="grid gap-3">
-              <li className="flex items-center pt-2 justify-between text-sm">
-                <span className="text-muted-foreground">Regime Fiduciário</span><span>{comission.regimeFiduciario ? "Sim" : "Não"}</span>
-              </li>
-              <li className="flex items-center pt-2 justify-between text-sm">
-                <span className="text-muted-foreground">Natureza</span><span>{comission.naturezaOperacao.descricao}</span>
-              </li>
-              <li className="flex items-center pt-2 justify-between text-sm">
-                <span className="text-muted-foreground">Data Emissão</span><span>{comission.dataEmissaoSerie}</span>
-              </li>
-              <li className="flex items-center pt-2 justify-between text-sm">
-                <span className="text-muted-foreground">Preço Emitido</span><span>{comission.precoUnitario}</span>
-              </li>
-              <li className="flex items-center pt-2 justify-between text-sm">
-                <span className="text-muted-foreground">Devedor</span><span>{comission.codigoCetipBbb}</span>
-              </li>
-              <li className="flex items-center pt-2 justify-between text-sm">
-                <span className="text-muted-foreground">Segmento</span><span>{comission.descricaoSegmentoOperacao}</span>
+                <span className="text-muted-foreground">Série</span><span>{emission.serie}</span>
               </li>
             </ul>
             <ul className="grid gap-3">
               <li className="flex items-center pt-2 justify-between text-sm">
-                <span className="text-muted-foreground">Data de Vencimento</span><span>{comission.dataVencimentoSerie}</span>
+                <span className="text-muted-foreground">Regime Fiduciário</span><span>{emission.regimeFiduciario ? "Sim" : "Não"}</span>
               </li>
               <li className="flex items-center pt-2 justify-between text-sm">
-                <span className="text-muted-foreground">Quantidade Emitida</span><span>{comission.quantidadeEmitida}</span>
+                <span className="text-muted-foreground">Natureza</span><span>{emission.naturezaOperacao.descricao}</span>
               </li>
               <li className="flex items-center pt-2 justify-between text-sm">
-                <span className="text-muted-foreground">Periodicidade Pagamento Juros</span><span>{comission.pagamentoPassivo.periodicidadeFrequenciaJuros.descricao}</span>
+                <span className="text-muted-foreground">Data Emissão</span><span>{emission.dataEmissaoSerie}</span>
               </li>
               <li className="flex items-center pt-2 justify-between text-sm">
-                <span className="text-muted-foreground">Periodicidade Amortização</span><span>{comission.pagamentoPassivo.periodicidadeFrequenciaAmortizacao.descricao}</span>
+                <span className="text-muted-foreground">Preço Emitido</span><span>{emission.precoUnitario}</span>
               </li>
               <li className="flex items-center pt-2 justify-between text-sm">
-                <span className="text-muted-foreground">Remuneração</span><span>{comission.remuneracao}</span>
+                <span className="text-muted-foreground">Devedor</span><span>{emission.codigoCetipBbb}</span>
               </li>
               <li className="flex items-center pt-2 justify-between text-sm">
-                <span className="text-muted-foreground">Volume Emitido</span><span>{comission.volumeEmitido}</span>
+                <span className="text-muted-foreground">Segmento</span><span>{emission.descricaoSegmentoOperacao}</span>
+              </li>
+            </ul>
+            <ul className="grid gap-3">
+              <li className="flex items-center pt-2 justify-between text-sm">
+                <span className="text-muted-foreground">Data de Vencimento</span><span>{emission.dataVencimentoSerie}</span>
+              </li>
+              <li className="flex items-center pt-2 justify-between text-sm">
+                <span className="text-muted-foreground">Quantidade Emitida</span><span>{emission.quantidadeEmitida}</span>
+              </li>
+              <li className="flex items-center pt-2 justify-between text-sm">
+                <span className="text-muted-foreground">Periodicidade Pagamento Juros</span><span>{emission.pagamentoPassivo.periodicidadeFrequenciaJuros.descricao}</span>
+              </li>
+              <li className="flex items-center pt-2 justify-between text-sm">
+                <span className="text-muted-foreground">Periodicidade Amortização</span><span>{emission.pagamentoPassivo.periodicidadeFrequenciaAmortizacao.descricao}</span>
+              </li>
+              <li className="flex items-center pt-2 justify-between text-sm">
+                <span className="text-muted-foreground">Remuneração</span><span>{emission.remuneracao}</span>
+              </li>
+              <li className="flex items-center pt-2 justify-between text-sm">
+                <span className="text-muted-foreground">Volume Emitido</span><span>{emission.volumeEmitido}</span>
               </li>
             </ul>
             <ul className="grid gap-3">
@@ -158,16 +158,16 @@ export default async function Page({ params: { id } }: { params: { id: number } 
                 <span className="text-muted-foreground">Meses Atualização Monetária</span><span>N/A</span>
               </li>
               <li className="flex items-center pt-2 justify-between text-sm">
-                <span className="text-muted-foreground">Oferta</span><span>{comission.tipoOferta.value}</span>
+                <span className="text-muted-foreground">Oferta</span><span>{emission.tipoOferta.value}</span>
               </li>
               <li className="flex items-center pt-2 justify-between text-sm">
-                <span className="text-muted-foreground">Quantidade Integralizada</span><span>{comission.pagamentoPassivo.integralizacaoList[0].quantidadeIntegralizada}</span>
+                <span className="text-muted-foreground">Quantidade Integralizada</span><span>{emission.pagamentoPassivo.integralizacaoList[0].quantidadeIntegralizada}</span>
               </li>
               <li className="flex items-center pt-2 justify-between text-sm">
-                <span className="text-muted-foreground">Possibilidade Pré-Pagamento</span><span>{comission.possibilidadePrePagamento.value}</span>
+                <span className="text-muted-foreground">Possibilidade Pré-Pagamento</span><span>{emission.possibilidadePrePagamento.value}</span>
               </li>
               <li className="flex items-center pt-2 justify-between text-sm">
-                <span className="text-muted-foreground">Prêmio Pré-Pagamento</span><span>{comission.existenciaPremioPrePagamento ? "Sim" : "Não"}</span>
+                <span className="text-muted-foreground">Prêmio Pré-Pagamento</span><span>{emission.existenciaPremioPrePagamento ? "Sim" : "Não"}</span>
               </li>
             </ul>
           </div>
