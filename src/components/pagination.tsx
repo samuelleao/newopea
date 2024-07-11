@@ -1,14 +1,14 @@
+
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
-const PaginationDemo = ({ totalCount, hasItems, pageSize, pageIndex }: any) => {
+const PaginationDemo = ({ totalCount, hasItems, pageSize, pageIndex = 1 }: any) => {
   const lastPage = Math.ceil(totalCount / pageSize);
 
   const renderPageLinks = () => {
@@ -23,13 +23,17 @@ const PaginationDemo = ({ totalCount, hasItems, pageSize, pageIndex }: any) => {
       startPage = Math.max(1, endPage - maxButtons + 1);
     }
 
+
     for (let i = startPage; i <= endPage; i++) {
       pages.push(
         <PaginationItem key={i}>
-          <PaginationLink href={`/list/${i}`} isActive={i === Number(pageIndex)}>
+          <PaginationLink
+            href={`?page=${i}`}
+            isActive={i === Number(pageIndex)
+            } >
             {i}
           </PaginationLink>
-        </PaginationItem>
+        </PaginationItem >
       );
     }
 
@@ -40,14 +44,13 @@ const PaginationDemo = ({ totalCount, hasItems, pageSize, pageIndex }: any) => {
     <Pagination>
       <PaginationContent>
         <PaginationItem>
-          <PaginationPrevious className={`${Number(pageIndex) === 1 ? "opacity-60 pointer-events-none" : ""} `} href={`/list/${Number(pageIndex) - 1}`} />
+          <PaginationPrevious className={`${Number(pageIndex) === 1 ? "opacity-60 pointer-events-none" : ""} `} href={`?page=${Number(pageIndex) - 1}`} />
         </PaginationItem>
         {renderPageLinks()}
-        {pageIndex < lastPage && (
           <PaginationItem>
-            <PaginationNext href={`/list/${Number(pageIndex) + 1}`} />
+            <PaginationNext className={`${pageIndex < lastPage ? "" : "opacity-60 pointer-events-none"}`} href={`?page=${Number(pageIndex) + 1}`} />
           </PaginationItem>
-        )}
+
       </PaginationContent>
     </Pagination>
   );

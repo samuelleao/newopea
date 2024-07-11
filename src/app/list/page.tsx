@@ -1,5 +1,5 @@
 import PaginationComponent from "@/components/pagination"
-import { getComissions } from "../services"
+import { getEmissions } from "./services"
 import Link from "next/link"
 import {
   Card,
@@ -15,14 +15,13 @@ import 'dayjs/plugin/duration';
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
-import { ModeToggle } from "@/components/mode-toggle";
-import { MixerHorizontalIcon } from "@radix-ui/react-icons";
-
+import { Filters } from "./_components/filters";
 dayjs.extend(require('dayjs/plugin/utc'));
 dayjs.extend(require('dayjs/plugin/duration'));
 
-export default async function Page({ params: { page } }: { params: { page: number } }) {
-  const comissions: EmissionsType = await getComissions(page)
+export default async function Page({ searchParams }: { searchParams?: { page: string; search: string; ativos: string | string[], ofertas: string | string[] } }) {
+  const { page, search, ativos, ofertas } = searchParams ?? { page: "1", search: "", ativos: "", ofertas: "" };
+  const comissions: EmissionsType = await getEmissions(page, search, ativos, ofertas)
   return (
     <div>
       <header className="py-20 relative overflow-hidden">
@@ -30,8 +29,10 @@ export default async function Page({ params: { page } }: { params: { page: numbe
           <h1 className="text-2xl font-semibold">Emissões</h1>
           <p className="text-muted-foreground pb-4">Visualize e filtre as emissões e acesse seus detalhes</p>
           <div className="flex gap-2">
-            <Input placeholder="Pesquisar por..." />
-            <Button size="icon" variant="outline"><MixerHorizontalIcon /></Button>
+            <form action="/list/" method="get" className="w-full">
+              <Input placeholder="Pesquisar por..." name="search" />
+            </form>
+            <Filters ativos={ativos} ofertas={ofertas} />
           </div>
         </div>
         <div
@@ -43,7 +44,7 @@ export default async function Page({ params: { page } }: { params: { page: numbe
         </div>
       </header>
       <div className="container">
-        <div className=" grid grid-cols-4 gap-4">
+        <div className=" grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {comissions.content.emissoes.items.map((item) => (
             <Link href={`/details/${item.codigoIf}`} key={item.id} aria-label="Visualizar detalhes">
               <Card className="hover:border-accent-foreground">
@@ -92,14 +93,14 @@ export default async function Page({ params: { page } }: { params: { page: numbe
 
         </div>
         <div className="w-full flex justify-center items-center py-8">
-            <PaginationComponent
-              lastPage={comissions.content.emissoes.lastPage}
-              totalCount={comissions.content.emissoes.totalCount}
-              hasItems={comissions.content.emissoes.hasItems}
-              pageSize={Number(comissions.content.emissoes.pageSize)}
-              pageIndex={page}
-            />
-          </div>
+          <PaginationComponent
+            lastPage={comissions.content.emissoes.lastPage}
+            totalCount={comissions.content.emissoes.totalCount}
+            hasItems={comissions.content.emissoes.hasItems}
+            pageSize={Number(comissions.content.emissoes.pageSize)}
+            pageIndex={page}
+          />
+        </div>
       </div>
     </div>
   )

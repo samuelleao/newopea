@@ -9,7 +9,7 @@ const Pagination = ({ className, ...props }: React.ComponentProps<"nav">) => (
   <nav
     role="navigation"
     aria-label="pagination"
-    className={cn("block max-w-max", className)}
+    className={cn("block w-max", className)}
     {...props}
   />
 )
