@@ -2,6 +2,8 @@
 
 Abaixo, você encontrará uma descrição detalhada das funcionalidades adicionadas e suas motivações, bem como as tecnologias utilizadas.
 
+- Link da aplicação: [Acessar aplicação](https://newopea.vercel.app/)
+
 ## Melhorias e Funcionalidades da Aplicação
 
 ### Paginação e Filtros
