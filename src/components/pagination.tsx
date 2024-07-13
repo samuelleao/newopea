@@ -18,7 +18,6 @@ const PaginationDemo = ({ totalCount, hasItems, pageSize, pageIndex = 1 }: any) 
     let startPage = Math.max(1, pageIndex - Math.floor(maxButtons / 2));
     let endPage = Math.min(lastPage, startPage + maxButtons - 1);
 
-    // Adjust startPage if we're near the end of the list
     if (endPage - startPage < maxButtons - 1) {
       startPage = Math.max(1, endPage - maxButtons + 1);
     }
@@ -50,7 +49,6 @@ const PaginationDemo = ({ totalCount, hasItems, pageSize, pageIndex = 1 }: any) 
           <PaginationItem>
             <PaginationNext className={`${pageIndex < lastPage ? "" : "opacity-60 pointer-events-none"}`} href={`?page=${Number(pageIndex) + 1}`} />
           </PaginationItem>
-
       </PaginationContent>
     </Pagination>
   );

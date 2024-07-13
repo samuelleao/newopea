@@ -1,4 +1,4 @@
-interface EmissionsType {
+export interface EmissionsType {
   content: {
     emissoes: Emission;
     filtros: Filtros;
@@ -25,10 +25,10 @@ interface Emission {
   hasItems: boolean;
   pageSize: number;
   pageIndex: number;
-  items: Item[];
+  items: EmissionItem[];
 }
 
-interface Item {
+export interface EmissionItem {
   id: number;
   idOperacao: number;
   codigoOpea: string;

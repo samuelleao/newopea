@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
-import { getEmission, getEmissionDocuments, getEmissionUnitPrice } from "../services";
-import { Emission, EmissionDocuments, EmissionUnityPrice } from "../types";
+import { getEmission, getEmissionDocuments, getEmissionGraphData, getEmissionUnitPrice } from "../services";
+import { Emission, EmissionDocuments, EmissionGraph, EmissionUnityPrice } from "../types";
 import { Card, CardDescription, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import {
@@ -13,49 +13,81 @@ import {
 } from "@/components/ui/table"
 import { Link1Icon } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
+import { Chart } from "../_components/chart";
+import { redirect } from "next/navigation";
+import { ListData, ListLabel, ListLine, ListWrapper } from "@/components/ui/list";
+import { SidebarNavgator } from "../_components/sidebar-navigator";
 
-export default async function Page({ params: { id } }: { params: { id: number } }) {
+interface EmissionDetailsProps {
+  params: {
+    id: number;
+  }
+}
+
+export async function generateMetadata({ params: { id } }: EmissionDetailsProps) {
+  const emissionQuery: Emission = await getEmission(id)
+  const emission = emissionQuery.content
+  return {
+    title: emission.apelidoOperacao,
+    openGraph: {
+      title: emission.apelidoOperacao,
+      description: `Detalhes da emissão ${emission.apelidoOperacao}`,
+      type: 'website',
+      url: `https://example.com/emissions/${emission.id}`
+    }
+  };
+}
+
+export default async function Page({ params: { id } }: EmissionDetailsProps) {
   const emissionQuery: Emission = await getEmission(id)
   const emission = emissionQuery.content
 
   const emissionUnitPrice: EmissionUnityPrice = await getEmissionUnitPrice(emission.operacao.CodigoOpea)
   const emissionDocuments: EmissionDocuments = await getEmissionDocuments(emission.idCedoc)
 
+  const emissionGraphData: EmissionGraph = await getEmissionGraphData(emission.operacao.CodigoOpea)
+
+  if (emission.apelidoOperacao === null) {
+    redirect('/')
+  }
+
   return (
-    <main className="container flex items-start justify-start">
-      <aside className="w-80 pt-10 space-y-4 pr-8 sticky top-14 min-h-screen border-r">
-        <Link href="/list" className="block text-sm text-muted-foreground hover:text-accent-foreground" >← Back to Templates</Link>
-        <Badge variant="outline">{emission.statusPassivoOperacao.value}</Badge>
+    <main className="container flex flex-col lg:flex-row items-start justify-start">
+      <aside className="w-full lg:w-80 pt-10 space-y-4 pr-8 lg:sticky top-14 lg:min-h-[calc(100vh_-60px)] max-h-screen lg:border-r">
+        <Link href="/" className="block text-sm text-muted-foreground hover:text-accent-foreground" >← Voltar para as emissões</Link>
+        <Badge variant="positive">{emission.statusPassivoOperacao.value}</Badge>
         <div className="space-y-2">
           <h1 className="text-4xl font-bold">{emission.apelidoOperacao}</h1>
-          <ul className="grid gap-3">
-            <li className="flex items-center pt-2 justify-between text-sm">
-              <span className="text-muted-foreground">Código opea</span><span>{emission.operacao.CodigoOpea}</span>
-            </li>
-            <li className="flex items-center pt-2 justify-between text-sm">
-              <span className="text-muted-foreground">ISIN</span><span>{emission.codigoIsin}</span>
-            </li>
-            <li className="flex items-center pt-2 justify-between text-sm">
-              <span className="text-muted-foreground">IF</span><span>{emission.codigoCetipBbb}</span>
-            </li>
-          </ul>
+          <ListWrapper className="divide-y">
+            <ListLine className="pt-4">
+              <ListLabel>Código opea</ListLabel><ListData>{emission.operacao.CodigoOpea}</ListData>
+            </ListLine>
+            <ListLine className="pt-4">
+              <ListLabel>ISIN</ListLabel><ListData>{emission.codigoIsin}</ListData>
+            </ListLine>
+            <ListLine className="pt-4">
+              <ListLabel>IF</ListLabel><ListData>{emission.codigoCetipBbb}</ListData>
+            </ListLine>
+          </ListWrapper>
         </div>
+        <SidebarNavgator />
       </aside>
-      <div className="pl-8 py-10 flex-1 space-y-8">
-        <section className="space-y-4">
-          <h2 className="text-lg font-medium text-primary">Preços Unitários</h2>
-          <div className="grid grid-cols-3 gap-4">
+      <div className="lg:pl-8 bg-background w-full lg:w-auto py-10 flex-1 space-y-8">
+        <section className="space-y-4" id="precos">
+          <h2 className="text-lg font-medium">Preços Unitários</h2>
+          <div className="grid lg:grid-cols-1 xl:grid-cols-3 gap-4">
             {emissionUnitPrice.content.items.map((item) => (
-              <Card>
+              <Card key={item.id}>
                 <CardHeader className="pb-6">
                   <CardDescription>{item.data}</CardDescription>
-                  <CardTitle className="text-2xl">{item.moeda.simbolo} {item.pu}</CardTitle>
+                  <CardTitle className="text-2xl">{item.pu.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}</CardTitle>
                 </CardHeader>
               </Card>
             ))}
           </div>
         </section>
-        <section>
+        <Chart chartData={emissionGraphData.content} />
+        <section id="documentos">
           <Card className="xl:col-span-2">
             <CardHeader className="flex flex-row items-center">
               <div className="grid gap-2">
@@ -87,9 +119,9 @@ export default async function Page({ params: { id } }: { params: { id: number } 
             </CardContent>
           </Card>
         </section>
-        <section className="space-y-4">
-          <h3 className="text-lg font-medium text-primary">Características</h3>
-          <div className="grid grid-cols-2 gap-8">
+        <section className="space-y-4" id="caracteristicas">
+          <h3 className="text-lg font-medium">Características</h3>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <ul className="grid gap-3">
               <li className="flex items-center pt-2 justify-between text-sm">
                 <span className="text-muted-foreground">Emissor</span><span>{emission.emissor.descricao}</span>

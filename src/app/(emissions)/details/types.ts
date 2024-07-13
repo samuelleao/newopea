@@ -293,3 +293,36 @@ interface Parent {
   conditions?: any;
   description?: any;
 }
+
+
+export interface EmissionGraph {
+  content: EmissionGraphContent[];
+  messages: Messages;
+}
+
+interface Messages {
+  errors: any[];
+  warnings: any[];
+  infos: any[];
+  successes: any[];
+  hasError: boolean;
+}
+
+export interface EmissionGraphContent {
+  dataPagamento: string;
+  amortizacao: number;
+  jurosPago: number;
+  saldoDevedor: number;
+  amortizacaoExtraordinaria: number;
+  premio: number;
+  jurosRemuneracao: number;
+  statusEvento: string;
+  moeda: Moeda;
+}
+
+interface Moeda {
+  id: number;
+  descricao: string;
+  simbolo: string;
+  codigoIso?: any;
+}
