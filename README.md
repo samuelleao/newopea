@@ -1,6 +1,6 @@
 # Projeto de Melhoria de Aplicação
 
-Bem-vindo ao meu projeto no GitHub! Este repositório contém as melhorias e funcionalidades que implementei em uma aplicação como parte de uma proposta de emprego. Abaixo, você encontrará uma descrição detalhada das funcionalidades adicionadas e das tecnologias utilizadas.
+Abaixo, você encontrará uma descrição detalhada das funcionalidades adicionadas e suas motivações, bem como as tecnologias utilizadas.
 
 ## Melhorias e Funcionalidades da Aplicação
 
